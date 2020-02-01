@@ -2,4 +2,5 @@
 test for cocosCreator
 
 server: Nodejs
+
 database: Mysql
