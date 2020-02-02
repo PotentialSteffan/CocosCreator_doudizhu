@@ -2,4 +2,4 @@
 
 server: Nodejs
 
-database: Mysql
+database: MySQL
