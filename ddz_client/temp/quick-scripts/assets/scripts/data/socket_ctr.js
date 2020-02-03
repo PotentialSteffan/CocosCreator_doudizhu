@@ -1,194 +1,167 @@
 (function() {"use strict";var __module = CC_EDITOR ? module : {exports:{}};var __filename = 'preview-scripts/assets/scripts/data/socket_ctr.js';var __require = CC_EDITOR ? function (request) {return cc.require(request, require);} : function (request) {return cc.require(request, __filename);};function __define (exports, require, module) {"use strict";
-cc._RF.push(module, '9ce03TvsElJsaLzLDlseCff', 'socket_ctr', __filename);
-// scripts/data/socket_ctr.js
+cc._RF.push(module, '171f7iUGLdOYoG8W/68APrO', 'socket_ctr', __filename);
+// scripts/data/socket_ctr.ts
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _event_lister = require("../util/event_lister.js");
-
-var _event_lister2 = _interopRequireDefault(_event_lister);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var socketCtr = function socketCtr() {
-    var that = {};
-    var respone_map = {};
-    var call_index = 0;
-
-    var _socket = null;
-    var event = (0, _event_lister2.default)({});
-    var _sendmsg = function _sendmsg(cmdtype, req, callindex) {
-        _socket.emit("notify", { cmd: cmdtype, data: req, callindex: callindex });
+Object.defineProperty(exports, "__esModule", { value: true });
+var event_lister_1 = require("../util/event_lister");
+var defines_1 = require("../defines");
+// import { Socket } from "../lib/socket-io.js"
+// import _socket from "socket.io"
+var socketCtr = /** @class */ (function () {
+    function socketCtr() {
+        this.respone_map = {};
+        this.call_index = 0;
+        this._socket = null;
+        this.eventObj = new event_lister_1.default();
+    }
+    socketCtr.prototype._sendmsg = function (cmdtype, req, callindex) {
+        this._socket.emit("notify", { cmd: cmdtype, data: req, callindex: callindex });
     };
-
-    var _request = function _request(cmdtype, req, callback) {
+    socketCtr.prototype._request = function (cmdtype, req, callback) {
         console.log("send cmd:" + cmdtype + "  " + JSON.stringify(req));
-        call_index++;
-        respone_map[call_index] = callback;
-        _sendmsg(cmdtype, req, call_index);
+        this.call_index++;
+        this.respone_map[this.call_index] = callback;
+        this._sendmsg(cmdtype, req, this.call_index);
     };
-
-    that.initSocket = function () {
+    socketCtr.prototype.initSocket = function () {
+        var _this = this;
         var opts = {
             'reconnection': false,
             'force new connection': true,
             'transports': ['websocket', 'polling']
         };
-        _socket = window.io.connect(defines.serverUrl, opts);
-
-        _socket.on("connection", function () {
+        this._socket = window["io"].connect(defines_1.defines.serverUrl, opts);
+        this._socket.on("connection", function () {
             console.log("connect server success!!");
         });
-
-        _socket.on("notify", function (res) {
+        this._socket.on("notify", function (res) {
             console.log("on notify cmd:" + JSON.stringify(res));
-            if (respone_map.hasOwnProperty(res.callBackIndex)) {
-                var callback = respone_map[res.callBackIndex];
+            if (_this.respone_map.hasOwnProperty(res.callBackIndex)) {
+                var callback = _this.respone_map[res.callBackIndex];
                 if (callback) {
                     callback(res.result, res.data);
                 }
-            } else {
+            }
+            else {
                 //if(res.callBackIndex!=0){
                 //console.log("not found call index",res.callBackIndex)
-
                 //提交一个监听的事件给监听器
                 //  on notify cmd:{"type":"player_joinroom_notify","result":0,"data":
                 //  {"accountid":"2586422","nick_name":"tiny110","avatarUrl":
                 //  "avatar_3","goldcount":1000,"seatindex":2},"callBackIndex":null}
                 //没有找到回到函数，就给事件监听器提交一个事件
                 var type = res.type;
-                event.fire(type, res.data);
+                _this.eventObj.fire(type, res.data);
                 // }
             }
         });
     };
-
-    that.request_wxLogin = function (req, callback) {
-        _request("wxlogin", req, callback);
+    socketCtr.prototype.request_wxLogin = function (req, callback) {
+        this._request("wxlogin", req, callback);
     };
-    that.request_guestLogin = function (req, callback) {
-        _request("guestlogin", req, callback);
+    socketCtr.prototype.request_guestLogin = function (req, callback) {
+        this._request("guestlogin", req, callback);
     };
-
-    that.request_creatroom = function (req, callback) {
-        _request("createroom_req", req, callback);
+    socketCtr.prototype.request_creatroom = function (req, callback) {
+        this._request("createroom_req", req, callback);
     };
-
-    that.request_jion = function (req, callback) {
-        _request("joinroom_req", req, callback);
+    socketCtr.prototype.request_jion = function (req, callback) {
+        this._request("joinroom_req", req, callback);
     };
-
-    that.request_enter_room = function (req, callback) {
-        _request("enterroom_req", req, callback);
+    socketCtr.prototype.request_enter_room = function (req, callback) {
+        this._request("enterroom_req", req, callback);
     };
-
     //发送不出牌信息
-    that.request_buchu_card = function (req, callback) {
-        _request("chu_bu_card_req", req, callback);
+    socketCtr.prototype.request_buchu_card = function (req, callback) {
+        this._request("chu_bu_card_req", req, callback);
     };
     /*玩家出牌
-      需要判断: 
+      需要判断:
          出的牌是否符合规则
          和上个出牌玩家比较，是否满足条件
-     */
-    that.request_chu_card = function (req, callback) {
-        _request("chu_card_req", req, callback);
+ 
+    */
+    socketCtr.prototype.request_chu_card = function (req, callback) {
+        this._request("chu_card_req", req, callback);
     };
     //监听其他玩家进入房间消息
-    that.onPlayerJoinRoom = function (callback) {
-        event.on("player_joinroom_notify", callback);
+    socketCtr.prototype.onPlayerJoinRoom = function (callback) {
+        this.eventObj.on("player_joinroom_notify", callback);
     };
-
-    that.onPlayerReady = function (callback) {
-        event.on("player_ready_notify", callback);
+    socketCtr.prototype.onPlayerReady = function (callback) {
+        this.eventObj.on("player_ready_notify", callback);
     };
-
-    that.onGameStart = function (callback) {
+    socketCtr.prototype.onGameStart = function (callback) {
         if (callback) {
-            event.on("gameStart_notify", callback);
+            this.eventObj.on("gameStart_notify", callback);
         }
     };
-
-    that.onChangeHouseManage = function (callback) {
+    socketCtr.prototype.onChangeHouseManage = function (callback) {
         if (callback) {
-            event.on("changehousemanage_notify", callback);
+            this.eventObj.on("changehousemanage_notify", callback);
         }
     };
     //发送ready消息
-    that.requestReady = function () {
-        _sendmsg("player_ready_notify", {}, null);
+    socketCtr.prototype.requestReady = function () {
+        this._sendmsg("player_ready_notify", {}, null);
     };
-
-    that.requestStart = function (callback) {
-        _request("player_start_notify", {}, callback);
+    socketCtr.prototype.requestStart = function (callback) {
+        this._request("player_start_notify", {}, callback);
     };
-
     //玩家通知服务器抢地主消息
-    that.requestRobState = function (state) {
-        _sendmsg("player_rob_notify", state, null);
+    socketCtr.prototype.requestRobState = function (state) {
+        this._sendmsg("player_rob_notify", state, null);
     };
     //服务器下发牌通知
-    that.onPushCards = function (callback) {
+    socketCtr.prototype.onPushCards = function (callback) {
         if (callback) {
-            event.on("pushcard_notify", callback);
+            this.eventObj.on("pushcard_notify", callback);
         }
     };
-
     //监听服务器通知开始抢地主消息
-    that.onCanRobState = function (callback) {
+    socketCtr.prototype.onCanRobState = function (callback) {
         if (callback) {
-            event.on("canrob_notify", callback);
+            this.eventObj.on("canrob_notify", callback);
         }
     };
-
     //监听服务器:通知谁抢地主操作消息
-    that.onRobState = function (callback) {
+    socketCtr.prototype.onRobState = function (callback) {
         if (callback) {
-            event.on("canrob_state_notify", callback);
+            this.eventObj.on("canrob_state_notify", callback);
         }
     };
-
     //监听服务器:确定地主消息
-    that.onChangeMaster = function (callback) {
+    socketCtr.prototype.onChangeMaster = function (callback) {
         if (callback) {
-            event.on("change_master_notify", callback);
+            this.eventObj.on("change_master_notify", callback);
         }
     };
-
     //监听服务器:显示底牌消息
-    that.onShowBottomCard = function (callback) {
+    socketCtr.prototype.onShowBottomCard = function (callback) {
         if (callback) {
-            event.on("change_showcard_notify", callback);
+            this.eventObj.on("change_showcard_notify", callback);
         }
     };
-
     //监听服务器:可以出牌消息
-    that.onCanChuCard = function (callback) {
+    socketCtr.prototype.onCanChuCard = function (callback) {
         if (callback) {
-            event.on("can_chu_card_notify", callback);
+            this.eventObj.on("can_chu_card_notify", callback);
         }
     };
-
-    that.onRoomChangeState = function (callback) {
+    socketCtr.prototype.onRoomChangeState = function (callback) {
         if (callback) {
-            event.on("room_state_notify", callback);
+            this.eventObj.on("room_state_notify", callback);
         }
     };
-
-    that.onOtherPlayerChuCard = function (callback) {
+    socketCtr.prototype.onOtherPlayerChuCard = function (callback) {
         if (callback) {
-            event.on("other_chucard_notify", callback);
+            this.eventObj.on("other_chucard_notify", callback);
         }
     };
-    return that;
-};
-
+    return socketCtr;
+}());
 exports.default = socketCtr;
-module.exports = exports["default"];
 
 cc._RF.pop();
         }

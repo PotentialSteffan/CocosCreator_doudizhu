@@ -1,53 +1,45 @@
 (function() {"use strict";var __module = CC_EDITOR ? module : {exports:{}};var __filename = 'preview-scripts/assets/scripts/util/event_lister.js';var __require = CC_EDITOR ? function (request) {return cc.require(request, require);} : function (request) {return cc.require(request, __filename);};function __define (exports, require, module) {"use strict";
-cc._RF.push(module, 'd485eyCsiBLBqweDM7SjVQh', 'event_lister', __filename);
-// scripts/util/event_lister.js
+cc._RF.push(module, '962995stOhKyrdclz+tbBDD', 'event_lister', __filename);
+// scripts/util/event_lister.ts
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var eventLister = function eventLister(obj) {
-    var register = {};
-
-    obj.on = function (type, method) {
-        if (register.hasOwnProperty(type)) {
-            register[type].push(method);
-        } else {
-            register[type] = [method];
+Object.defineProperty(exports, "__esModule", { value: true });
+var eventLister = /** @class */ (function () {
+    function eventLister() {
+        this.register = {};
+    }
+    eventLister.prototype.on = function (type, method) {
+        if (this.register.hasOwnProperty(type)) {
+            this.register[type].push(method);
+        }
+        else {
+            this.register[type] = [method];
         }
     };
-
-    obj.fire = function (type) {
-        if (register.hasOwnProperty(type)) {
-            var methodList = register[type];
+    eventLister.prototype.fire = function (type, data) {
+        if (this.register.hasOwnProperty(type)) {
+            var methodList = this.register[type];
             for (var i = 0; i < methodList.length; ++i) {
                 var handle = methodList[i];
                 var args = [];
                 for (var i = 1; i < arguments.length; ++i) {
                     args.push(arguments[i]);
                 }
-
                 //handle.call(this,args)
                 console.log("handle.call(this,args) type:" + type);
                 handle.apply(this, args);
             }
         }
     };
-
-    obj.removeLister = function (type) {
-        register[type] = [];
+    eventLister.prototype.removeLister = function (type) {
+        this.register[type] = [];
     };
-
-    obj.removeAllLister = function () {
-        register = {};
+    eventLister.prototype.removeAllLister = function () {
+        this.register = {};
     };
-
-    return obj;
-};
-
+    return eventLister;
+}());
 exports.default = eventLister;
-module.exports = exports["default"];
 
 cc._RF.pop();
         }

@@ -1,62 +1,77 @@
 (function() {"use strict";var __module = CC_EDITOR ? module : {exports:{}};var __filename = 'preview-scripts/assets/scripts/hallscene/prefabs_script/creatRoom.js';var __require = CC_EDITOR ? function (request) {return cc.require(request, require);} : function (request) {return cc.require(request, __filename);};function __define (exports, require, module) {"use strict";
-cc._RF.push(module, 'e85c8xPVuxKX5zdxLJ1e12h', 'creatRoom', __filename);
-// scripts/hallscene/prefabs_script/creatRoom.js
+cc._RF.push(module, '995673tBExCJJEghuronO4G', 'creatRoom', __filename);
+// scripts/hallscene/prefabs_script/creatRoom.ts
 
 "use strict";
-
-var _mygolbal = require("../../mygolbal.js");
-
-var _mygolbal2 = _interopRequireDefault(_mygolbal);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-cc.Class({
-    extends: cc.Component,
-
-    properties: {},
-
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var mygolbal_1 = require("../../mygolbal");
+var ccclass = cc._decorator.ccclass;
+var createRoom = /** @class */ (function (_super) {
+    __extends(createRoom, _super);
+    function createRoom() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
     // LIFE-CYCLE CALLBACKS:
-
     // onLoad () {},
-
-    start: function start() {},
-    _createroom: function _createroom(rate) {
+    createRoom.prototype.start = function () {
+    };
+    createRoom.prototype._createroom = function (rate) {
         if (rate < 0 || rate > 4) {
             console.log("create room rate error" + rate);
             return;
         }
-
         var global = 0;
         if (rate == 1) {
             global = 10;
-        } else if (rate == 2) {
+        }
+        else if (rate == 2) {
             global = 20;
-        } else if (rate == 3) {
+        }
+        else if (rate == 3) {
             global = 30;
-        } else if (rate == 4) {
+        }
+        else if (rate == 4) {
             global = 40;
         }
-
         var room_para = {
             global: global,
             rate: rate
-            //播放一个等待动画
-        };_mygolbal2.default.socket.request_creatroom(room_para, function (err, result) {
+        };
+        //播放一个等待动画
+        mygolbal_1.default.socket.request_creatroom(room_para, function (err, result) {
             if (err != 0) {
                 console.log("create_room err:" + err);
-            } else {
+            }
+            else {
                 console.log("create_room" + JSON.stringify(result));
                 //网络数据包
-                _mygolbal2.default.playerData.bottom = result.bottom;
-                _mygolbal2.default.playerData.rate = result.rate;
+                mygolbal_1.default.playerData.bottom = result.bottom;
+                mygolbal_1.default.playerData.rate = result.rate;
                 cc.director.loadScene("gameScene");
             }
         });
-    },
-
-
+    };
     // update (dt) {},
-    onButtonClick: function onButtonClick(event, customData) {
+    createRoom.prototype.onButtonClick = function (event, customData) {
         switch (customData) {
             case "create_room_1":
                 this._createroom(1);
@@ -77,8 +92,13 @@ cc.Class({
                 break;
         }
         this.node.destroy();
-    }
-});
+    };
+    createRoom = __decorate([
+        ccclass
+    ], createRoom);
+    return createRoom;
+}(cc.Component));
+exports.default = createRoom;
 
 cc._RF.pop();
         }

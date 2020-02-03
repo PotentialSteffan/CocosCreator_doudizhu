@@ -1,33 +1,27 @@
 (function() {"use strict";var __module = CC_EDITOR ? module : {exports:{}};var __filename = 'preview-scripts/assets/scripts/mygolbal.js';var __require = CC_EDITOR ? function (request) {return cc.require(request, require);} : function (request) {return cc.require(request, __filename);};function __define (exports, require, module) {"use strict";
-cc._RF.push(module, 'd9667atqdBHIb60A67blB9L', 'mygolbal', __filename);
-// scripts/mygolbal.js
+cc._RF.push(module, 'e8cf95t4QZBSaCin9HsUxaS', 'mygolbal', __filename);
+// scripts/mygolbal.ts
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _socket_ctr = require("./data/socket_ctr.js");
-
-var _socket_ctr2 = _interopRequireDefault(_socket_ctr);
-
-var _player = require("./data/player.js");
-
-var _player2 = _interopRequireDefault(_player);
-
-var _event_lister = require("./util/event_lister.js");
-
-var _event_lister2 = _interopRequireDefault(_event_lister);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var myglobal = {} || myglobal;
-myglobal.socket = (0, _socket_ctr2.default)();
-myglobal.playerData = (0, _player2.default)();
-myglobal.eventlister = (0, _event_lister2.default)({});
+Object.defineProperty(exports, "__esModule", { value: true });
+var socket_ctr_1 = require("./data/socket_ctr");
+var player_1 = require("./data/player");
+var event_lister_1 = require("./util/event_lister");
+var myglobal = /** @class */ (function () {
+    function myglobal() {
+        this.eventlister = new event_lister_1.default();
+    }
+    myglobal.getInstance = function () {
+        if (!myglobal.mInstance) {
+            myglobal.mInstance = new myglobal();
+        }
+        return myglobal.mInstance;
+    };
+    myglobal.socket = new socket_ctr_1.default();
+    myglobal.playerData = new player_1.default();
+    return myglobal;
+}());
 exports.default = myglobal;
-module.exports = exports["default"];
 
 cc._RF.pop();
         }
